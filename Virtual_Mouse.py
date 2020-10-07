@@ -3,16 +3,16 @@ import numpy as np
 import pyautogui
 import time
 
-# colour ranges for feeding to the inRange funtions 
+
 blue_range = np.array([[88,78,20],[128,255,255]])
 yellow_range = np.array([[21,70,80],[61,255,255]])
 red_range = np.array([[158,85,72],[180 ,255,255]])
 
-# Prior initialization of all centers for safety
+
 b_cen, y_pos, r_cen = [240,320],[240,320],[240,320]
 cursor = [960,540]
 
-# Area ranges for contours of different colours to be detected
+
 r_area = [100,1700]
 b_area = [100,1700]
 y_area = [100,1700]
@@ -74,13 +74,11 @@ def changeStatus(key):
 	else:
 		pass
 
-# cv2.inRange function is used to filter out a particular color from the frame
-# The result then undergoes morphosis i.e. erosion and dilation
-# Resultant frame is returned as mask 
+
 def makeMask(hsv_frame, color_Range):
 	
 	mask = cv2.inRange( hsv_frame, color_Range[0], color_Range[1])
-	# Morphosis next ...
+	
 	eroded = cv2.erode( mask, kernel, iterations=1)
 	dilated = cv2.dilate( eroded, kernel, iterations=1)
 	
@@ -124,7 +122,7 @@ def drawCentroid(vid, color_area, mask, showCentroid):
 		# return error handling values
 		return (-1,-1)
 
-#helps in filtering the required colored objects from the background
+
 def calibrateColor(color, def_range):
 	
 	global kernel
@@ -160,11 +158,7 @@ def calibrateColor(color, def_range):
 			cv2.destroyWindow(name)
 			return def_range
 
-'''
-This function takes as input the center of yellow region (yc) and 
-the previous cursor position (pyp). The new cursor position is calculated 
-in such a way that the mean deviation for desired steady state is reduced.
-'''
+
 def setCursorPos( yc, pyp):
 	
 	yp = np.zeros(2)
@@ -178,8 +172,7 @@ def setCursorPos( yc, pyp):
 	
 	return yp
 
-# Depending upon the relative positions of the three centroids, this function chooses whether 
-# the user desires free movement of cursor, left click, right click or dragging
+
 def chooseAction(yp, rc, bc):
 	out = np.array(['move', 'false'])
 	if rc[0]!=-1 and bc[0]!=-1:
@@ -207,8 +200,7 @@ def chooseAction(yp, rc, bc):
 		out[0] = -1
 		return out 		
 
-# Movement of cursor on screen, left click, right click,scroll up, scroll down
-# and dragging actions are performed here based on value stored in 'action'.  
+
 def performAction( yp, rc, bc, action, drag, perform):
 	if perform:
 		cursor[0] = 4*(yp[0]-110)
